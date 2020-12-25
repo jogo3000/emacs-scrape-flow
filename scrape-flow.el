@@ -1,7 +1,7 @@
 ;;; scrape-flow.el --- Fetching training data from flow.polar.com
 
 ;; Author: Matti Uusitalo <uusitalo.matti@gmail.com>
-;; Package-Requires ((dash "1.0"))
+;; Package-Requires ((dash "1.0") (ivy "1.0"))
 ;; Keywords: training
 
 ;;; Commentary:
@@ -15,6 +15,7 @@
 (require 'dom)
 (require 'json)
 (require 'parse-time)
+(require 'ivy)
 
 (defgroup scrape-flow nil
   "Fetching data from polar flow."
