@@ -462,7 +462,7 @@ TODO: unit conversion"
                              (format "https://flow.polar.com%s")
                              (scrape-flow--fetch-exercise)
                              (scrape-flow--parse-exercise)
-                             (scrape-flow-get-training-action))))))
+                             (funcall scrape-flow-get-training-action))))))
 
 (provide 'scrape-flow)
 ;;; scrape-flow.el ends here
