@@ -15,29 +15,34 @@ buffer. You can customize the action with
 =scrape-flow-get-training-action=. For example, my =init.el= has the following:
 
 #+BEGIN_SRC elisp
+(defun jogo3000/distance-to-string (distance)
+  "Convert DISTANCE in meters to readable string."
+  (-> (/ distance 1000) (number-to-string)))
+
 (defun scrape-flow-to-org-item (training)
   "Insert TRAINING as 'org-mode' item."
-  (insert
-   (format
-    "%s %s
-:PROPERTIES:
-:AIKA:        %s
-:LAJI:        %s
-:MATKA:       %s
-:KESTO:       %s
-:KESKISYKE:   %s
-:KESKIVAUHTI: %s
-:KENKÄ:
-:END:
-"
-    (make-string (org-current-level) ?*)
-    (alist-get 'sport training)
-    (format-time-string "<%Y-%m-%d %a %H:%M>" (alist-get 'time training))
-    (cdr (assoc (alist-get 'sport training) scrape-flow-sports-translations))
-    (-some-> (alist-get 'distance training) (/ 1000))
-    (-some-> (alist-get 'duration training) (scrape-flow--seconds-to-string))
-    (alist-get 'avg-hr training)
-    (-some-> (alist-get 'avg-pace training) (scrape-flow--pace-to-string)))))
+  (org-insert-heading-respect-content)
+  (org-insert-property-drawer)
+  (org-entry-put (point) "AIKA"
+                 (format-time-string "<%Y-%m-%d %a %H:%M>" (alist-get 'time training)))
+  (org-entry-put (point) "LAJI"
+                 (cdr (assoc (alist-get 'sport training) scrape-flow-sports-translations)))
+  (-some->> (alist-get 'distance training) jogo3000/distance-to-string
+            (org-entry-put (point) "MATKA"))
+  (-some->> (alist-get 'duration training) (scrape-flow--seconds-to-string)
+            (org-entry-put (point) "KESTO"))
+  (-some->> (alist-get 'avg-hr training) (number-to-string)
+            (org-entry-put (point) "KESKISYKE"))
+  (-some->> (alist-get 'avg-pace training) (scrape-flow--pace-to-string)
+            (org-entry-put (point) "KESKIVAUHTI"))
+  (org-entry-put (point) "SRPE"
+                 (ivy-read "Arvioi SRPE: " '("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")))
+  (org-entry-put (point) "KENKÄ"
+                 (ivy-read "Mitä kenkää käytit: "
+                           (org-property-get-allowed-values (point) "KENKÄ")))
+  (org-entry-put (point) "ALUSTA"
+                 (ivy-read "Kuvaile harjoitusalusta: "
+                           (org-property-get-allowed-values (point) "ALUSTA"))))
 
 (setq scrape-flow-get-training-action 'scrape-flow-to-org-item)
 #+END_SRC
