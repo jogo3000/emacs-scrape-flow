@@ -1,0 +1,43 @@
+* scrape-flow.el
+Library for scraping data from flow.polar.com.
+
+* Usage
+
+First, login to flow.polar.com by using =M-x scrape-flow-login=. This
+asks for your login name and password and logs to flow.polar.com using
+=url.el= package. Your credentials won't be saved. Your session lives
+in the cookies =url.el= uses.
+
+After that you can use =M-x scrape-flow-get-training= to produce an
+=ivy= buffer which allows you to select the exercise you want to
+fetch. By default this inserts the fetched object to the current
+buffer. You can customize the action with
+=scrape-flow-get-training-action=. For example, my =init.el= has the following:
+
+#+BEGIN_SRC elisp
+(defun scrape-flow-to-org-item (training)
+  "Insert TRAINING as 'org-mode' item."
+  (insert
+   (format
+    "%s %s
+:PROPERTIES:
+:AIKA:        %s
+:LAJI:        %s
+:MATKA:       %s
+:KESTO:       %s
+:KESKISYKE:   %s
+:KESKIVAUHTI: %s
+:KENKÄ:
+:END:
+"
+    (make-string (org-current-level) ?*)
+    (alist-get 'sport training)
+    (format-time-string "<%Y-%m-%d %a %H:%M>" (alist-get 'time training))
+    (cdr (assoc (alist-get 'sport training) scrape-flow-sports-translations))
+    (-some-> (alist-get 'distance training) (/ 1000))
+    (-some-> (alist-get 'duration training) (scrape-flow--seconds-to-string))
+    (alist-get 'avg-hr training)
+    (-some-> (alist-get 'avg-pace training) (scrape-flow--pace-to-string)))))
+
+(setq scrape-flow-get-training-action 'scrape-flow-to-org-item)
+#+END_SRC
