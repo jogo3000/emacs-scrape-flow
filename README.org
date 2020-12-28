@@ -46,3 +46,17 @@ buffer. You can customize the action with
 
 (setq scrape-flow-get-training-action 'scrape-flow-to-org-item)
 #+END_SRC
+
+Training data is gathered into an =alist= with following structure
+
+#+BEGIN_SRC elisp
+  `((time . ,(scrape-flow--get-exercise-time dom)) ; emacs internal time
+    (sport . ,(scrape-flow--get-sport dom))        ; sport name as string
+    (duration . ,(scrape-flow--get-duration dom))  ; duration in seconds
+    (distance . ,(scrape-flow--get-distance dom))  ; distance in meters
+    (avg-hr . ,(scrape-flow--get-avg-hr dom))      ; average heart rate
+    (avg-pace . ,(scrape-flow--get-avg-pace dom))  ; average pace as seconds per kilometer
+    (ascent . ,(scrape-flow--get-ascent dom))      ; ascent in meters
+    (url . "https://flow.polar.com/training/analysis/495849359") ; link to the training details
+    (laps . (('alist))))                                         ; alist containing lap data
+#+END_SRC

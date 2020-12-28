@@ -445,8 +445,39 @@ TODO: unit conversion"
    (seq-filter
     (lambda (m) (string= selection (scrape-flow--render-for-ivy m))) exercises)))
 
+(defun scrape-flow--fetch-exercise-summary (url)
+  "Fetch and parse exercise summary from URL."
+  (->> (scrape-flow--fetch-exercise url)
+       (scrape-flow--parse-exercise)
+       (cons `(url . ,url))))
+
+(defun scrape-flow--get-laps (exercise-id)
+  "Retrieve lap data for EXERCISE-ID."
+  (with-current-buffer
+      (let ((url-request-method "POST")
+            (url-request-extra-headers
+             '(("Content-Type" . "application/json; charset=utf-8")))
+            (url-request-data
+             (json-encode `((exeId . ,exercise-id)
+                            (type . "man")))))
+        (url-retrieve-synchronously "https://flow.polar.com/training/getLaps"))
+    (goto-char 0)
+    (forward-paragraph)
+    (ignore-errors                      ; If no laps, there's nothing to read
+      (json-read))))
+
 (defun scrape-flow-get-training ()
-  "Get training from polar flow and forward it to `scrape-flow-get-training-action`."
+  "Get training from polar flow and forward it to `scrape-flow-get-training-action`.
+Training data is an alist with the following structure:
+  `((time . ,(scrape-flow--get-exercise-time dom)) ; Emacs internal time
+    (sport . ,(scrape-flow--get-sport dom))        ; sport name as string
+    (duration . ,(scrape-flow--get-duration dom))  ; duration in seconds, number
+    (distance . ,(scrape-flow--get-distance dom))  ; distance in meters, number
+    (avg-hr . ,(scrape-flow--get-avg-hr dom))      ; average heart rate, number
+    (avg-pace . ,(scrape-flow--get-avg-pace dom))  ; average pace as seconds per kilometer, number
+    (ascent . ,(scrape-flow--get-ascent dom))      ; ascent in meters, number
+    (url . https://flow.polar.com/training/analysis/495849359) ; link to the training details, string
+    (laps . (('alist))))                                         ; alist containing lap data"
   (interactive)
   (-let* (((_ _ _ _ this-month this-year) (decode-time (current-time)))
           (year (read-number "year: " this-year))
@@ -464,10 +495,13 @@ TODO: unit conversion"
               :action (lambda (x)
                         (let* ((selection (scrape-flow--choose-selected x exercises))
                                (url (format "https://flow.polar.com%s"
-                                            (alist-get 'url selection))))
+                                            (alist-get 'url selection)))
+                               (exercise-id (alist-get 'listItemId selection))
+                               (laps (scrape-flow--get-laps exercise-id)))
                           (->> (scrape-flow--fetch-exercise url)
                                (scrape-flow--parse-exercise)
                                (cons `(url . ,url))
+                               (cons `(laps . ,laps))
                                (funcall scrape-flow-get-training-action)))))))
 
 (provide 'scrape-flow)
