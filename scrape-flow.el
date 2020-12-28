@@ -439,8 +439,14 @@ TODO: unit conversion"
           (scrape-flow--identify-sport suggestion)
           (scrape-flow--seconds-to-string (/ (alist-get 'duration suggestion) 1000))))
 
+(defun scrape-flow--choose-selected (selection exercises)
+  "Return choice designated by SELECTION from EXERCISES."
+  (car
+   (seq-filter
+    (lambda (m) (string= selection (scrape-flow--render-for-ivy m))) exercises)))
+
 (defun scrape-flow-get-training ()
-  "Get training from polar flow and insert as org item to current buffer."
+  "Get training from polar flow and forward it to `scrape-flow-get-training-action`."
   (interactive)
   (-let* (((_ _ _ _ this-month this-year) (decode-time (current-time)))
           (year (read-number "year: " this-year))
@@ -456,13 +462,13 @@ TODO: unit conversion"
               :caller 'scrape-flow-get-training
               :initial-input (format-time-string "^%Y-%02m-%02dT" (current-time))
               :action (lambda (x)
-                        (->> (seq-filter (lambda (m) (string= x (scrape-flow--render-for-ivy m))) exercises)
-                             (car)
-                             (alist-get 'url)
-                             (format "https://flow.polar.com%s")
-                             (scrape-flow--fetch-exercise)
-                             (scrape-flow--parse-exercise)
-                             (funcall scrape-flow-get-training-action))))))
+                        (let* ((selection (scrape-flow--choose-selected x exercises))
+                               (url (format "https://flow.polar.com%s"
+                                            (alist-get 'url selection))))
+                          (->> (scrape-flow--fetch-exercise url)
+                               (scrape-flow--parse-exercise)
+                               (cons `(url . ,url))
+                               (funcall scrape-flow-get-training-action)))))))
 
 (provide 'scrape-flow)
 ;;; scrape-flow.el ends here
