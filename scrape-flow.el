@@ -416,6 +416,15 @@ TODO: unit conversion"
        (car)
        (string-to-number)))
 
+(defun scrape-flow--get-data-id (dom)
+  "Return data-id from DOM.
+
+The data-id can be used to fetch the laps and other details."
+  (string-to-number
+   (dom-attr
+    (dom-by-class dom "multisport-sportdetails__single hidden")
+    'data-id)))
+
 (defun scrape-flow--parse-exercise (dom)
   "Scrape exercise from DOM."
   `((time . ,(scrape-flow--get-exercise-time dom))
@@ -424,7 +433,25 @@ TODO: unit conversion"
     (distance . ,(scrape-flow--get-distance dom))
     (avg-hr . ,(scrape-flow--get-avg-hr dom))
     (avg-pace . ,(scrape-flow--get-avg-pace dom))
-    (ascent . ,(scrape-flow--get-ascent dom))))
+    (ascent . ,(scrape-flow--get-ascent dom))
+    (data-id . ,(scrape-flow--get-data-id dom))))
+
+(defun scrape-flow--get-laps (data-id)
+  "Retrieve lap data for DATA-ID.
+DATA-ID is not the same as exercise id.  It is found on the
+exercise details page."
+  (with-current-buffer
+      (let ((url-request-method "POST")
+            (url-request-extra-headers
+             '(("Content-Type" . "application/json; charset=utf-8")))
+            (url-request-data
+             (json-encode `((exeId . ,data-id)
+                            (type . "man")))))
+        (url-retrieve-synchronously "https://flow.polar.com/training/getLaps"))
+    (goto-char 0)
+    (forward-paragraph)
+    (ignore-errors                      ; If no laps, there's nothing to read
+      (json-read))))
 
 (defun scrape-flow--identify-sport (suggestion)
   "Identify sport from the image url of the SUGGESTION."
@@ -451,24 +478,10 @@ TODO: unit conversion"
        (scrape-flow--parse-exercise)
        (cons `(url . ,url))))
 
-(defun scrape-flow--get-laps (exercise-id)
-  "Retrieve lap data for EXERCISE-ID."
-  (with-current-buffer
-      (let ((url-request-method "POST")
-            (url-request-extra-headers
-             '(("Content-Type" . "application/json; charset=utf-8")))
-            (url-request-data
-             (json-encode `((exeId . ,exercise-id)
-                            (type . "man")))))
-        (url-retrieve-synchronously "https://flow.polar.com/training/getLaps"))
-    (goto-char 0)
-    (forward-paragraph)
-    (ignore-errors                      ; If no laps, there's nothing to read
-      (json-read))))
-
 ;;;###autoload
 (defun scrape-flow-get-training ()
-  "Get training from polar flow and forward it to `scrape-flow-get-training-action`.
+  "Get training from polar flow.
+Data is forwarded to`scrape-flow-get-training-action`.
 Training data is an alist with the following keys:
 
  - time       ; Emacs internal time
