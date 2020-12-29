@@ -468,16 +468,16 @@ TODO: unit conversion"
 
 (defun scrape-flow-get-training ()
   "Get training from polar flow and forward it to `scrape-flow-get-training-action`.
-Training data is an alist with the following structure:
-  `((time . ,(scrape-flow--get-exercise-time dom)) ; Emacs internal time
-    (sport . ,(scrape-flow--get-sport dom))        ; sport name as string
-    (duration . ,(scrape-flow--get-duration dom))  ; duration in seconds, number
-    (distance . ,(scrape-flow--get-distance dom))  ; distance in meters, number
-    (avg-hr . ,(scrape-flow--get-avg-hr dom))      ; average heart rate, number
-    (avg-pace . ,(scrape-flow--get-avg-pace dom))  ; average pace as seconds per kilometer, number
-    (ascent . ,(scrape-flow--get-ascent dom))      ; ascent in meters, number
-    (url . https://flow.polar.com/training/analysis/495849359) ; link to the training details, string
-    (laps . (('alist))))                                         ; alist containing lap data"
+Training data is an alist with the following keys:
+
+ - time       ; Emacs internal time
+ - sport      ; sport name as string
+ - duration   ; duration in seconds, number
+ - distance   ; distance in meters, number
+ - avg-hr     ; average heart rate, number
+ - avg-pace   ; average pace as seconds per kilometer, number
+ - ascent     ; ascent in meters, number
+ - url        ; link to the training details, string"
   (interactive)
   (-let* (((_ _ _ _ this-month this-year) (decode-time (current-time)))
           (year (read-number "year: " this-year))
@@ -496,12 +496,10 @@ Training data is an alist with the following structure:
                         (let* ((selection (scrape-flow--choose-selected x exercises))
                                (url (format "https://flow.polar.com%s"
                                             (alist-get 'url selection)))
-                               (exercise-id (alist-get 'listItemId selection))
-                               (laps (scrape-flow--get-laps exercise-id)))
+                               (exercise-id (alist-get 'listItemId selection)))
                           (->> (scrape-flow--fetch-exercise url)
                                (scrape-flow--parse-exercise)
                                (cons `(url . ,url))
-                               (cons `(laps . ,laps))
                                (funcall scrape-flow-get-training-action)))))))
 
 (provide 'scrape-flow)

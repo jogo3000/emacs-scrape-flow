@@ -58,5 +58,5 @@ Training data is gathered into an =alist= with following structure
     (avg-pace . ,(scrape-flow--get-avg-pace dom))  ; average pace as seconds per kilometer
     (ascent . ,(scrape-flow--get-ascent dom))      ; ascent in meters
     (url . "https://flow.polar.com/training/analysis/495849359") ; link to the training details
-    (laps . (('alist))))                                         ; alist containing lap data
+    )
 #+END_SRC
