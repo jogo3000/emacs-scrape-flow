@@ -466,6 +466,7 @@ TODO: unit conversion"
     (ignore-errors                      ; If no laps, there's nothing to read
       (json-read))))
 
+;;;###autoload
 (defun scrape-flow-get-training ()
   "Get training from polar flow and forward it to `scrape-flow-get-training-action`.
 Training data is an alist with the following keys:
