@@ -425,6 +425,21 @@ The data-id can be used to fetch the laps and other details."
     (dom-by-class dom "multisport-sportdetails__single hidden")
     'data-id)))
 
+(defun scrape-flow--get-sample-data (dom)
+  "Extract sample based training data from DOM."
+  (let ((data-script
+          (->> (dom-by-tag dom 'script)
+               (seq-filter
+                (lambda (script)
+                  (and (not (dom-attr script 'src))
+                       (string= "text/javascript" (dom-attr script 'type))
+                       (string-match-p "^\s+trainingSessionData\s+=\s+" (dom-text script)))))
+               (dom-text))))
+    (string-match "^\s+trainingSessionData\s+=\s+" data-script)
+    (let* ((start (match-end 0))
+           (end (string-match ";" data-script start)))
+      (json-read-from-string (substring data-script start end)))))
+
 (defun scrape-flow--parse-exercise (dom)
   "Scrape exercise from DOM."
   `((time . ,(scrape-flow--get-exercise-time dom))
@@ -434,7 +449,8 @@ The data-id can be used to fetch the laps and other details."
     (avg-hr . ,(scrape-flow--get-avg-hr dom))
     (avg-pace . ,(scrape-flow--get-avg-pace dom))
     (ascent . ,(scrape-flow--get-ascent dom))
-    (data-id . ,(scrape-flow--get-data-id dom))))
+    (data-id . ,(scrape-flow--get-data-id dom))
+    (sample-data . ,(scrape-flow--get-sample-data dom))))
 
 (defun scrape-flow--get-laps (data-id)
   "Retrieve lap data for DATA-ID.
