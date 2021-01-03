@@ -532,5 +532,33 @@ Training data is an alist with the following keys:
                                (cons `(url . ,url))
                                (funcall scrape-flow-get-training-action)))))))
 
+(defun scrape-flow-get-bounding-box (dom)
+  "Determine bounding box of an exercise in DOM.
+Returns an alist with max-lat, min-lat, max-lon and min-lon."
+  (let* ((samples
+          (->> (alist-get 'sample-data dom)
+               (alist-get 'mapData)
+               (alist-get 'samples)))
+         (first-sample (-> (elt samples 0) (elt 0))))
+    (seq-reduce
+     (lambda (acc sample)
+       (let ((coord (elt sample 0)))
+         `((max-lat . ,(max (alist-get 'max-lat acc)
+                            (alist-get 'lat coord)))
+           (min-lat . ,(min (alist-get 'min-lat acc)
+                            (alist-get 'lat coord)))
+           (max-lon . ,(max (alist-get 'max-lon acc)
+                            (alist-get 'lon coord)))
+           (min-lon . ,(min (alist-get 'min-lon acc)
+                            (alist-get 'lon coord)))))
+       )
+     samples
+     `((max-lat . ,(alist-get 'lat first-sample))
+       (min-lat . ,(alist-get 'lat first-sample))
+       (max-lon . ,(alist-get 'lon first-sample))
+       (min-lon . ,(alist-get 'lon first-sample))))))
+
+
+
 (provide 'scrape-flow)
 ;;; scrape-flow.el ends here
