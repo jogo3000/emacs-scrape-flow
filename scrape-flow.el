@@ -427,7 +427,10 @@ The data-id can be used to fetch the laps and other details."
     'data-id)))
 
 (defun scrape-flow--get-sample-data (dom)
-  "Extract sample based training data from DOM."
+  "Extract sample based training data from DOM.
+Samples are found in an inline script on the analysis page, in a
+var called 'trainingSessionData'.  This function locates that
+script node and parses the json object."
   (let ((data-script
           (->> (dom-by-tag dom 'script)
                (seq-filter
