@@ -254,7 +254,8 @@ add support by customizing this variable"
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/e6a478c45077351e49d836f8623978bb-2015-10-20_13_46_05" . "Track&field running")
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/4ddd474b10302e72fb53bbd69028e15b-2015-10-20_13_46_17" . "Mountain biking")
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/7c2ea21441d07645c08df51ee9509c4d-2015-10-20_13_45_52" . "Circuit training")
-    ("https://platform.cdn.polar.com/ecosystem/sport/icon/561a80f6d7eef7cc328aa07fe992af8e-2015-10-20_13_46_03" . "Cycling"))
+    ("https://platform.cdn.polar.com/ecosystem/sport/icon/561a80f6d7eef7cc328aa07fe992af8e-2015-10-20_13_46_03" . "Cycling")
+    ("https://platform.cdn.polar.com/ecosystem/sport/icon/5998fe5af79d3aecf3ef44e921069b2c-2015-10-20_13_45_43" . "Walking"))
   "Polar flow icons urls can be used to identify the sport."
   :type '(alist :key-type string :value-type string))
 
