@@ -359,7 +359,8 @@ TODO: unit conversion"
             (scrape-flow--get-bdp it "^BDPPaceAvg$")
             (split-string it ":")
             (mapcar 'string-to-number it))))
-    (+ (* 60 minutes) seconds)))
+    (when (and (numberp minutes) (numberp seconds))
+      (+ (* 60 minutes) seconds))))
 
 (defun scrape-flow--get-duration (dom)
   "Return duration (in seconds) from DOM."
