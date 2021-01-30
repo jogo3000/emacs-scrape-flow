@@ -296,14 +296,25 @@ add support by customizing this variable"
   (let ((dom (scrape-flow--fetch-html "https://flow.polar.com")))
     (not (dom-by-id dom "loginButtonNav"))))
 
+(defun scrape-flow--csrftoken ()
+  "Fetch login page and locate CSRF token."
+  (let ((inputs (-> (scrape-flow--fetch-html "https://flow.polar.com/login")
+                    (dom-by-tag 'form)
+                    (car)
+                    (dom-by-tag 'input))))
+    (-> (seq-filter (lambda (input) (string= (dom-attr input 'name) "csrfToken")) inputs)
+        (car)
+        (dom-attr 'value))))
+
 ;;;###autoload
 (defun scrape-flow-login ()
   "Log in to Polar Flow, unless already logged in."
   (interactive)
   (unless (scrape-flow-logged-p)
-    (let* ((user-name (read-string "Polar flow user name"))
-           (password (read-passwd "Polar flow password")))
-      (url-retrieve-synchronously "https://flow.polar.com/login")
+    (let* ((user-name (read-string "Polar flow user name: "))
+           (password (read-passwd "Polar flow password: "))
+           (csrfToken (scrape-flow--csrftoken)))
+
       (let ((url-request-method "POST")
             (url-request-extra-headers
              '(("Content-Type" . "application/x-www-form-urlencoded")))
@@ -312,7 +323,10 @@ add support by customizing this variable"
                           (concat (url-hexify-string (car arg))
                                   "="
                                   (url-hexify-string (cdr arg))))
-                        `(("email" . ,user-name) ("password" . ,password))
+                        `(("email" . ,user-name)
+                          ("password" . ,password)
+                          ("csrfToken" . ,csrfToken)
+                          ("returnUrl" . "/"))
                         "&")))
         (url-retrieve-synchronously "https://flow.polar.com/login")))))
 
