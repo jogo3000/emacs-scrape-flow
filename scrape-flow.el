@@ -478,7 +478,8 @@ exercise details page."
   (with-current-buffer
       (let ((url-request-method "POST")
             (url-request-extra-headers
-             '(("Content-Type" . "application/json; charset=utf-8")))
+             '(("Content-Type" . "application/json; charset=utf-8")
+               ("X-Requested-With" . "XMLHttpRequest")))
             (url-request-data
              (json-encode `((exeId . ,data-id)
                             (type . "man")))))
