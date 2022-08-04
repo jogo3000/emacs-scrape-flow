@@ -460,6 +460,22 @@ script node and parses the json object."
            (end (string-match ";" data-script start)))
       (json-read-from-string (substring data-script start end)))))
 
+(defun scrape-flow--get-note (dom)
+  "Extract training note from DOM."
+  (-some-> dom
+    (dom-by-id "sportProfileSelection")
+    (scrape-flow--get-bdp "note")))
+
+(defun scrape-flow--get-rpe (dom)
+  "Extract RPE from DOM."
+  (-some-> dom
+    (dom-by-id "rpeIndex")
+    (dom-children)
+    (dom-by-class "basic-data-panel__value")
+    (dom-children)
+    (car)
+    (string-trim)))
+
 (defun scrape-flow--parse-exercise (dom)
   "Scrape exercise from DOM."
   `((time . ,(scrape-flow--get-exercise-time dom))
@@ -470,7 +486,9 @@ script node and parses the json object."
     (avg-pace . ,(scrape-flow--get-avg-pace dom))
     (ascent . ,(scrape-flow--get-ascent dom))
     (data-id . ,(scrape-flow--get-data-id dom))
-    (sample-data . ,(scrape-flow--get-sample-data dom))))
+    (sample-data . ,(scrape-flow--get-sample-data dom))
+    (note . ,(scrape-flow--get-note dom))
+    (rpe . ,(scrape-flow--get-rpe dom))))
 
 (defun scrape-flow--get-laps (data-id)
   "Retrieve lap data for DATA-ID.
