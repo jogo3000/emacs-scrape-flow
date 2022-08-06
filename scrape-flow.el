@@ -357,9 +357,10 @@ Limits the exercises between START-MONTH, START-YEAR and END-MONTH, END-YEAR"
   "Return distance from DOM.
 Expects the unit to be in meters.
 TODO: unit conversion"
-  (* 1000
-     (string-to-number
-      (scrape-flow--get-bdp dom "^BDPDistance$"))))
+  (when-let ((distance (scrape-flow--get-bdp dom "^BDPDistance$")))
+    (* 1000
+       (string-to-number
+        distance))))
 
 (defun scrape-flow--get-avg-hr (dom)
   "Return avg hr from DOM."
