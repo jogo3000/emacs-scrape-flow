@@ -365,8 +365,8 @@ TODO: unit conversion"
 
 (defun scrape-flow--get-avg-hr (dom)
   "Return avg hr from DOM."
-  (string-to-number
-   (scrape-flow--get-bdp dom "^BDPHrAvg$")))
+  (when-let ((hr (scrape-flow--get-bdp dom "^BDPHrAvg$")))
+    (string-to-number hr)))
 
 (defun scrape-flow--get-avg-pace (dom)
   "Return average pace (in seconds / km) from DOM.
