@@ -258,7 +258,8 @@ add support by customizing this variable"
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/5998fe5af79d3aecf3ef44e921069b2c-2015-10-20_13_45_43" . "Walking")
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/2524f40bcd8372f0912cb213c1fc9a29-2015-10-20_13_45_29" . "Road cycling")
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/b9d557a3f17fe5040a11de51d936456e-2015-10-20_13_46_30" . "Other indoor")
-    ("https://platform.cdn.polar.com/ecosystem/sport/icon/d1ce94078aec226be28f6c602e6803e1-2015-10-20_13_45_19" . "Strength training"))
+    ("https://platform.cdn.polar.com/ecosystem/sport/icon/d1ce94078aec226be28f6c602e6803e1-2015-10-20_13_45_19" . "Strength training")
+    ("https://platform.cdn.polar.com/ecosystem/sport/icon/ca49e784b60b5c6df608f86e9b6a2385-2015-10-20_13_45_17" . "Ice skating"))
   "Polar flow icons urls can be used to identify the sport."
   :type '(alist :key-type string :value-type string))
 
@@ -599,8 +600,6 @@ Returns an alist with max-lat, min-lat, max-lon and min-lon."
        (min-lat . ,(alist-get 'lat first-sample))
        (max-lon . ,(alist-get 'lon first-sample))
        (min-lon . ,(alist-get 'lon first-sample))))))
-
-
 
 (provide 'scrape-flow)
 ;;; scrape-flow.el ends here
