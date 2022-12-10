@@ -270,7 +270,7 @@ add support by customizing this variable"
 
 (defun scrape-flow--default-fetch-action (training)
   "Insert TRAINING, pretty printed to the current buffer."
-  (insert (pp-string training)))
+  (insert (pp-to-string training)))
 
 (defun scrape-flow--seconds-to-string (time)
   "Return TIME as a readable string."
