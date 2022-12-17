@@ -178,7 +178,7 @@ add support by customizing this variable"
     ("Boxing" . "Nyrkkeily")
     ("Canoeing" . "Melonta")
     ("Circuit training" . "Kuntopiiri")
-    ("Classic XC skiing" . "Hiihto")
+    ("Classic XC skiing" . "Perinteinen hiihto")
     ("Classic roller skiing" . "Rullahiihto")
     ("Climbing (indoor)" . "Kiipeily")
     ("Cricket" . "Muu laji")
@@ -259,7 +259,8 @@ add support by customizing this variable"
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/2524f40bcd8372f0912cb213c1fc9a29-2015-10-20_13_45_29" . "Road cycling")
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/b9d557a3f17fe5040a11de51d936456e-2015-10-20_13_46_30" . "Other indoor")
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/d1ce94078aec226be28f6c602e6803e1-2015-10-20_13_45_19" . "Strength training")
-    ("https://platform.cdn.polar.com/ecosystem/sport/icon/ca49e784b60b5c6df608f86e9b6a2385-2015-10-20_13_45_17" . "Ice skating"))
+    ("https://platform.cdn.polar.com/ecosystem/sport/icon/ca49e784b60b5c6df608f86e9b6a2385-2015-10-20_13_45_17" . "Ice skating")
+    ("https://platform.cdn.polar.com/ecosystem/sport/icon/3c1103ccbeee33fa663a1dc8e0fd8a6d-2015-10-20_13_45_48" . "Classic XC skiing"))
   "Polar flow icons urls can be used to identify the sport."
   :type '(alist :key-type string :value-type string))
 
