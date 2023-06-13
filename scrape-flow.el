@@ -260,7 +260,8 @@ add support by customizing this variable"
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/b9d557a3f17fe5040a11de51d936456e-2015-10-20_13_46_30" . "Other indoor")
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/d1ce94078aec226be28f6c602e6803e1-2015-10-20_13_45_19" . "Strength training")
     ("https://platform.cdn.polar.com/ecosystem/sport/icon/ca49e784b60b5c6df608f86e9b6a2385-2015-10-20_13_45_17" . "Ice skating")
-    ("https://platform.cdn.polar.com/ecosystem/sport/icon/3c1103ccbeee33fa663a1dc8e0fd8a6d-2015-10-20_13_45_48" . "Classic XC skiing"))
+    ("https://platform.cdn.polar.com/ecosystem/sport/icon/3c1103ccbeee33fa663a1dc8e0fd8a6d-2015-10-20_13_45_48" . "Classic XC skiing")
+    ("https://platform.cdn.polar.com/ecosystem/sport/icon/ee3e0ec11df970fb9d9b39805373ac70-2015-10-20_13_45_23" . "Canoeing"))
   "Polar flow icons urls can be used to identify the sport."
   :type '(alist :key-type string :value-type string))
 
